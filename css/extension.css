@@ -4,8 +4,8 @@ body {
 
 button {
 	border: 0;
-	width: 35px;
-	height: 35px;
+	min-width: 35px;
+	min-height: 35px;
 }
 
 button.selected {

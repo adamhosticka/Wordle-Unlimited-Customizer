@@ -1,5 +1,6 @@
 const COLUMNS = 5;
-
+const SELECTED = "selected";
+const NOT_SELECTED = "not-selected";
 
 function sendMessageToContentScript(message) {
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
@@ -8,29 +9,52 @@ function sendMessageToContentScript(message) {
 }
 
 
-
-function init() {
-  buttonsContainer = document.getElementById("hide-columns-buttons-container");
+function initHideColumnsContainer() {
+  let hideColumnsContainer = document.getElementById("hide-columns-buttons-container");
   for(let colId = 0; colId < COLUMNS; colId++) {
     let button = document.createElement("button");
     button.innerHTML = colId + 1;
     button.classList.add("me-2", "not-selected");
     button.value = "not-selected";
-    buttonsContainer.appendChild(button);
+    hideColumnsContainer.appendChild(button);
     button.addEventListener("click", function (e) {
-      if(e.target.value == "not-selected") {
-        e.target.value = "selected";
-        e.target.classList.remove("not-selected");
-        e.target.classList.add("selected");
+      if(e.target.value == NOT_SELECTED) {
+        e.target.value = SELECTED;
+        e.target.classList.remove(NOT_SELECTED);
+        e.target.classList.add(SELECTED);
         sendMessageToContentScript({ action: "hideColumn", colId: colId });
-      } else {
-        e.target.value = "not-selected";
-        e.target.classList.remove("selected");
-        e.target.classList.add("not-selected");
+      } else if(e.target.value == SELECTED) {
+        e.target.value = NOT_SELECTED;
+        e.target.classList.remove(SELECTED);
+        e.target.classList.add(NOT_SELECTED);
         sendMessageToContentScript({ action: "showColumn", colId: colId });
       }
     });
   }
+}
+
+function initHideKeyboardButton() {
+  let hideKeyboardButton = document.getElementById("hideKeyboard");
+  hideKeyboardButton.addEventListener("click", function (e) {
+    if(e.target.value == NOT_SELECTED) {
+      e.target.value = SELECTED;
+      e.target.innerHTML = "Show keyboard";
+      e.target.classList.remove(NOT_SELECTED);
+      e.target.classList.add(SELECTED);
+      sendMessageToContentScript({ action: "toggleKeyboard", hidden: true });
+    } else if(e.target.value == SELECTED) {
+      e.target.value = NOT_SELECTED;
+      e.target.innerHTML = "Hide keyboard";
+      e.target.classList.remove(SELECTED);
+      e.target.classList.add(NOT_SELECTED);
+      sendMessageToContentScript({ action: "toggleKeyboard", hidden: false });
+    }
+  });
+}
+
+function init() {
+  initHideColumnsContainer();
+  initHideKeyboardButton();
 }
 init();
 

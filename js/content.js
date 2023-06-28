@@ -3,15 +3,21 @@ const LETTERS = 5;
 const HIDE_TILE_CLASS_NAME = "hideTile";
 
 
+
+function getGameThemeManager() {
+	return document.getElementsByTagName("game-app").item(0).shadowRoot.children.item(1);
+}
+
 function getGameTile(rowId, colId) {
-	return document.getElementsByTagName("game-app").item(0).shadowRoot.children.item(1).getElementsByTagName("div").item(0)
-		.getElementsByTagName("div").item(4).getElementsByTagName("game-row").item(rowId).shadowRoot
-		.children.item(1).getElementsByTagName("game-tile").item(colId)
+	return getGameThemeManager().getElementsByTagName("div").item(0)
+	.getElementsByTagName("div").item(4).getElementsByTagName("game-row").item(rowId).shadowRoot
+	.children.item(1).getElementsByTagName("game-tile").item(colId)
 }
 
 function getTile(rowId, colId) {
 	return getGameTile(rowId, colId).shadowRoot.children.item(1);
 }
+
 
 function init() {
 	for(let rowId = 0; rowId < GUESSES; rowId++) {
@@ -45,11 +51,18 @@ function showColumn(colId) {
 	}
 }
 
+function toggleKeyboard(hidden) {
+	getGameThemeManager().getElementsByTagName("game-keyboard").item(0).hidden = hidden;
+}
+
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 	if(message.action === "hideColumn") {
 		hideColumn(message.colId);	
   	}
 	else if(message.action == "showColumn") {
 		showColumn(message.colId);
+	}
+	else if(message.action == "toggleKeyboard") {
+		toggleKeyboard(message.hidden);
 	}
 });
