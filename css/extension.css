@@ -1,11 +1,16 @@
 body {
-	min-width: 300px;
+	min-width: 600px;
 }
 
 button {
 	border: 0;
 	min-width: 35px;
 	min-height: 35px;
+}
+
+button.box {
+	width: 35px;
+	height: 35px;
 }
 
 button.selected {

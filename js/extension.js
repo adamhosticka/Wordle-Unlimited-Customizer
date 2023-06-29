@@ -1,4 +1,5 @@
 const COLUMNS = 5;
+const KEYBOARD_ROWS = 3;
 const SELECTED = "selected";
 const NOT_SELECTED = "not-selected";
 
@@ -42,7 +43,7 @@ function sendMessageToContentScript(message, buttonId) {
 function initHideColumnsContainer() {
   let hideColumnsContainer = document.getElementById("hide-columns-buttons-container");
   for(let colId = 0; colId < COLUMNS; colId++) {
-    let button = new Button(hideColumnsContainer, {action: "toggleColumn", colId: colId}, ["me-2"], colId + 1, colId + 1);
+    let button = new Button(hideColumnsContainer, {action: "toggleColumn", colId: colId}, ["me-2", "box"], colId + 1, colId + 1);
     buttons.push(button);
   }
 }
@@ -53,6 +54,25 @@ function initHideKeyboardButton() {
   buttons.push(hideKeyboardButton); 
 }
 
+function initHideKeyboardRows() {
+  let keyboardRowsContainer = document.getElementById("keyboard-rows-container");
+  for(let rowId = 0; rowId < KEYBOARD_ROWS; rowId++) {
+    let keyboardRowButton = new Button(keyboardRowsContainer, {action: "toggleKeyboardRow", rowId: rowId}, ["mb-2"], 
+      `Row ${rowId + 1}`, `Row ${rowId + 1}`);
+    buttons.push(keyboardRowButton);
+  }
+}
+
+function initClearAllButton() {
+  let clearAllButton = document.getElementById("clear-all-button");
+  clearAllButton.addEventListener("click", function(e) {
+    for(let button of buttons) {
+      button.state = NOT_SELECTED;
+      changeButtonAttributes(button);
+    }
+    sendMessageToContentScript({action: "clearAll"}, -1);
+  });
+}
 
 
 function switchButtonState(button, currentState) {
@@ -95,7 +115,9 @@ function createButtonsAndSetListeners() {
 
 async function init() {
   initHideColumnsContainer();
-  initHideKeyboardButton();
+  // initHideKeyboardButton();
+  initHideKeyboardRows();
+  initClearAllButton();
   
   const buttonStates = await getButtonStates();
   if(buttonStates.valid) {
