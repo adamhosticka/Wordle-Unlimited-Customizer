@@ -1,13 +1,11 @@
 {
     "name": "Wordle Unlimited Customizer",
-    "version": "0.0.1",
-    "description": "Hide tiles, columns and keyboard to make your Wordle experience even more challenging!",
+    "version": "1.0.0",
+    "description": "Hide columns and keyboard rows to make your Wordle experience even more challenging!",
     "manifest_version": 3,
     "author": "Adam Hoštička",
     "permissions": [
-	    "activeTab",
-	    "declarativeContent",
-	    "storage"
+	    "activeTab"
     ],
     "content_scripts": [
         {
@@ -16,16 +14,8 @@
             "css": ["css/content.css"]
         }
     ],
-    "web_accessible_resources": [
-        {
-            "resources": ["css/content.css"],
-            "matches": ["https://wordleunlimited.org/*"]
-        }
-    ],
     "action":{
         "default_popup": "index.html",
         "default_title": "Wordle Unlimited Customizer"
     }
 }
-
-
